@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Problem from './Problem.component';
 import axios from 'axios';
 
 class Problems extends Component {
@@ -7,7 +8,9 @@ class Problems extends Component {
 
         this.state = {
             problems: null,
-            isLoading: true
+            isLoading: true,
+            totalPages: -1,
+            currentPage: -1
         };
     }
 
@@ -17,7 +20,7 @@ class Problems extends Component {
             return <div> Loading~ </div>
         } else {
             return (
-                problems.map(problem => (<div>{problem.name}</div>))
+                problems.slice(0, 50).map(problem => (<Problem problem={problem} />))
             );
         }
     }
@@ -27,7 +30,7 @@ class Problems extends Component {
             .then((response) => {
                 this.setState({problems: response.data.result.problems});
             }).then(() => {
-                this.setState({isLoading: false});
+                this.setState({isLoading: false, totalPages: Math.ceil(this.state.problems.length / 50), currentPage: 1});
             });
     }
 }
